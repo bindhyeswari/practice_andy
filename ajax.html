@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<style>
+    #container{
+        font-weight: 200;
+        font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+    }
+</style>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+       var url = 'http://uitr.herokuapp.com/countries';
+       callAJAX(url,function(res){
+           var div = document.getElementById('container');
+           var span = document.createElement('span');
+           span.innerHTML = 'Status Text: ' +res;
+           div.appendChild(span);
+       });
+       function callAJAX(url,callback){
+           var xhr = new XMLHttpRequest();
+           xhr.open('GET',url);
+           if(xhr.readyState==1){
+               console.log('open() has been called');
+           }
+           xhr.setRequestHeader('Accept','application/json');
+           xhr.setRequestHeader('Content-type','application/json');
+           xhr.addEventListener('readystatechange',function(){
+               if(xhr.readyState===2){
+                   //getResponseHeader('Set-Cookie') will return null;
+                   console.log('The headers have been received');
+                   console.log(xhr.getResponseHeader('Set-Cookie'));
+                   console.log(xhr.getAllResponseHeaders());
+               }
+               if(xhr.readyState===3){
+                   console.log('The response body has been received');
+               }
+               if(xhr.readyState===4 && xhr.status===200){
+                   var resJSON = JSON.parse(xhr.responseText);
+                   console.log(resJSON);
+                   callback(xhr.statusText);
+                   console.log(xhr.statusText);
+               }
+
+           });
+           xhr.send();
+       }
+   });
+
+</script>
+<body>
+    <div id="container">
+
+    </div>
+</body>
+</html>
