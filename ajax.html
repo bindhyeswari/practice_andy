@@ -9,16 +9,25 @@
         font-weight: 200;
         font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
     }
+    .img{
+        display: inline-block;
+        width: 25vw;
+        height: 25vh;;
+        padding: 1em;
+    }
+
 </style>
 <script>
    document.addEventListener('DOMContentLoaded', function () {
        var url = 'http://uitr.herokuapp.com/countries';
+
        callAJAX(url,function(res){
            var div = document.getElementById('container');
            var span = document.createElement('span');
            span.innerHTML = 'Status Text: ' +res;
            div.appendChild(span);
        });
+
        function callAJAX(url,callback){
            var xhr = new XMLHttpRequest();
            xhr.open('GET',url);
@@ -27,6 +36,8 @@
            }
            xhr.setRequestHeader('Accept','application/json');
            xhr.setRequestHeader('Content-type','application/json');
+           //To override a mimeType;
+           //xhr.overrideMimeType("text/plain; charset=utf8");
            xhr.addEventListener('readystatechange',function(){
                if(xhr.readyState===2){
                    //getResponseHeader('Set-Cookie') will return null;
@@ -43,16 +54,151 @@
                    callback(xhr.statusText);
                    console.log(xhr.statusText);
                }
-
+               if(xhr.status != 200){
+                   throw new Error("Request status failed due to " + xhr.status + ":" +xhr.statusText);
+               }
            });
            xhr.send();
+       }
+       var deliveryData= {find: "pizza", radius: "1km",zip: 02134};
+       //postData()
+       //console.log(encodedFormData(deliveryData));
+
+       postData('http://localhost:63342/practice_andy/ajax.html',deliveryData,function(res){
+           console.log("post data response text " +res);
+       });
+
+       getData('http://localhost:63342/practice_andy/ajax.html',deliveryData,function(res){
+           console.log("post data response text " +res);
+       });
+
+       postFormData('http://localhost:63342/practice_andy/ajax.html',deliveryData,function(res){
+          console.log("form data response text " + res);
+       });
+
+        function encodedFormData(data){
+            if(!data){
+                return ";"
+            }
+            var pairs = [];
+            for (var name in data){
+                if(!data.hasOwnProperty(name)){
+                    continue;
+                }
+                if(typeof  data[name] === "function"){
+                    console.log("Type of Data " +typeof data[name]);
+                    continue;
+                }
+                var value = data[name].toString();
+                console.log('Data  names ' + data[name]);
+                name = encodeURIComponent(name.replace("","+"));
+                console.log('encodeURIComponent Name ' + name);
+                value = encodeURIComponent(value.replace("","+"));
+                console.log('encodeURIComponent Value ' + value);
+                pairs.push(name+"="+value);
+            }
+            return pairs.join('&');
+        }
+
+       function postData(url,data,callback){
+           var xhrPost = new XMLHttpRequest();
+           xhrPost.open('POST',url);
+           xhrPost.addEventListener('readystatechange',function(){
+               
+              if(xhrPost.readyState===4 && callback){
+                  callback(xhrPost);
+              }
+           });
+           xhrPost.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+           xhrPost.send(encodedFormData(data));
+       }
+
+       function getData(url,data,callback){
+           var xhrGet = new XMLHttpRequest();
+           xhrGet.open('GET',url+"?"+encodedFormData(data));
+           xhrGet.addEventListener('readystatechange',function(){
+              if(xhrGet.readyState === 4 && xhrGet.status === 200){
+                  callback(xhrGet);
+              }
+           });
+           xhrGet.send();
+       }
+
+       document.querySelector('input[type="file"]').addEventListener('change',function(){
+           var files = this.files;
+           var divUpl = document.getElementById('img');
+           for(var i = 0, len = files.length; i < len; i++){
+               var file = files[i];
+               console.log("file type: " + file.type + "file name: "+ file.name + "file size: " + file.size);
+
+               var fileReader = new FileReader();
+               var divProg = document.createElement('div');
+               divUpl.appendChild(divProg);
+
+               fileReader.container = createProgressbar(divProg);
+               fileReader.addEventListener('progress',function(e){
+                       if (e.lengthComputable) {
+                           this.container.firstElementChild.value = e.loaded / e.total * 10000;
+                       }
+               });
+
+               fileReader.addEventListener('loadend',function(){
+                   var img= document.createElement('img');
+                   img.src = this.result;
+                   img.setAttribute("class","img");
+                   divUpl.appendChild(img);
+               });
+               fileReader.readAsDataURL(file);
+
+           }
+       });
+
+       function createProgressbar(divProg){
+           var prog = document.createElement('progress');
+           prog.setAttribute('max','3500');
+           prog.setAttribute('value','0');
+           divProg.appendChild(prog);
+           return divProg;
+       }
+
+       function postFormData(url,data,callbackForm) {
+           var formData = new FormData();
+           var xhrForm = new XMLHttpRequest();
+
+           var timer = setTimeout(function(){
+              var timeout = true;
+               xhrForm.abort();
+           });
+
+           xhrForm.open('POST', url);
+           xhrForm.addEventListener('readystatechange', function () {
+
+               if (xhrForm.readyState === 4 && xhrForm.status === 200) {
+                   for (var name in data) {
+                       var value = data[name];
+                       if (typeof value === "function") {
+                           formData.append(name, value);
+                       }
+                   }
+                   callbackForm(xhrForm);
+               }
+               else if (xhrForm.readyState !== 4 && xhrForm.status !== 200){
+                    if(timer.timeout == true){
+                        return;
+                    }
+                   clearTimeout(timer);
+               }
+           });
+           xhrForm.send(formData);
        }
    });
 
 </script>
 <body>
     <div id="container">
-
+    </div>
+    <div id="img">
+        <input type="file" multiple/>
     </div>
 </body>
 </html>
