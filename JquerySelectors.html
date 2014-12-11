@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        div{
+            height: 50vh;
+        }
+        div div{
+            width: 100px;
+            height: 100px;
+            background-color: yellow;
+            margin: 0 auto;
+
+        }
+        div.colored{
+            background-color: green;
+        }
+        input{
+            display:block;
+        }
+
+    </style>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script>
+        $(function () {
+//            $("*").css("color","red");
+            $("#click").click(function(){
+                $("div:animated").toggleClass("colored");
+            });
+            function animatedIt(){
+                $('#move').slideToggle("slow",animatedIt);
+            }
+            animatedIt();
+            $("a[target|='_blank']").css("color","green");
+            $("input[name*='testing']").val('contains value name testing');
+            $("input[name~='email']").val('email name');
+            $("input[name$='value']").val('ends with value');
+            $("input:disabled").val('disabled input');
+            $(":button").css('backgroundColor','yellow');
+            $("div:contains('Div')").css('textDecoration','underline');
+        });
+
+    </script>
+</head>
+<body>
+    <div>Parent Div
+        <div>Child Div</div>
+        <div>Child Div2</div>
+        <div id="move">This is a moving div</div>
+    </div>
+    <button id="click">click me</button>
+    <a href="www.google.com" target="_blank">google</a>
+    <input type="text" name="testing"/>
+    <input type="text" name="email"/>
+    <input type="text" name="new-testing"/>
+    <input type="text" disabled="disabled"/>
+    <input type="text" name="testing-value"/>
+
+
+
+</body>
+</html>

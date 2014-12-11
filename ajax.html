@@ -104,7 +104,7 @@
            var xhrPost = new XMLHttpRequest();
            xhrPost.open('POST',url);
            xhrPost.addEventListener('readystatechange',function(){
-               
+
               if(xhrPost.readyState===4 && callback){
                   callback(xhrPost);
               }
