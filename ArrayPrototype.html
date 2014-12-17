@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        var simplyArr = [1,2,3];
+        var month = ["Jan","Feb","March","April","May","June","July","August","September","Oct","Nov","Dec"];
+        var arr = [1,4,2,3,3,9,9,10,10,5,5,5,5,5,11];
+        var sortedArr = [1,2,4,5,6,7,9,10,12];
+        var entriesArr = arr.entries();
+        var food = ["pizza","burgers","hotdogs","sushi","ramen","chicken"];
+        var keysArr = arr.keys();
+        var date = new Date();
+        var dateArr = [month[date.getMonth()],date.getDay(),date.getYear()];
+        var localStringDate = dateArr.toLocaleString();
+        console.log('Date using toLocaleString() : ' +localStringDate);
+        var someArr = arr.some(function(data){
+            return data >12;
+        });
+        //checks if atleast 1 or a few elements are true;
+        console.log('some function array; ' + someArr); //false
+        console.log('sort food: ' +food.sort());
+        var foodSlice = food.slice(0,3);
+        console.log('food slice: ' + foodSlice);
+        var spliceFood = food.splice(2,2,"burrito"); //goes to index 2, remove two elements, then adds burrito
+        console.log('food splice: ' + food);
+        var reduceArr = arr.reduce(function(x,y){
+           return x + y;
+        });
+        //reduces the array from left to right. Array.reduceRight() performs the same function except right to left
+        console.log('total sum of arr using reduce ' + reduceArr);
+        function queueFirstElement(element){
+            return simplyArr.unshift(element);
+        }
+        function queueLastElement(element){
+            return simplyArr.push(element);
+        }
+        function dequeueFirstElement(){
+            return simplyArr.shift();
+        }
+        function dequeueLastElement(){
+            return simplyArr.pop();
+        }
+        
+        console.log(queueLastElement(15)); //[1,2,3,15]
+        console.log(queueLastElement(16)); //[1,2,3,15,16]
+        console.log(queueFirstElement(17)); //[17,1,2,3,15,16]
+        console.log(dequeueFirstElement()); // [1,2,3,15,16]
+        console.log(queueFirstElement(18)); // [18,2,3,15,16]
+        console.log(queueLastElement(20)); // [18,2,3,15,16,20]
+        console.log(dequeueLastElement()); // [18,2,3,15,16]
+        console.log(simplyArr);
+
+        var mapArr = sortedArr.map.call(arr,function(x){
+            return x;
+        }).reverse();
+        console.log('reversed array ' + mapArr);
+
+        function findFrequency(data){
+            var freq = [];
+            var i =0;
+            while(i < data.length){
+                var uniqVal = data[i];
+                var indexOfVal = data.indexOf(data[i]);
+                var lastIndexVal = data.lastIndexOf(uniqVal)+1;
+                var getFrequency = "key: " + uniqVal + " frequency: " +(lastIndexVal - indexOfVal);
+                freq.push(getFrequency);
+                i = lastIndexVal;
+            }
+            return freq;
+        }
+        var convertArrToString = food;
+        console.log('returns array in a string ' + convertArrToString.toString());
+        console.log(typeof convertArrToString);
+        console.log('find frequency: ' + findFrequency(arr));
+        console.log('Array.join() sorted array with + ' + sortedArr.join('+'));
+        console.log([5,3,5,3,5,3,5,3,5,3].fill(5,0,6));
+        console.log('index from sortedArr element 5 is ' + sortedArr.indexOf(5));
+        console.log('Array.includes() does not work');
+//        console.log('check the sortedArr if it includes 10 starting from index 3 '+ sortedArr.includes(10));
+        var notPrimeIndex = arr.findIndex(function(element){
+           return element % 2 == 0;
+        });
+
+        console.log('not prime indexes on array arr ' +notPrimeIndex);
+        console.log('for each function ---------------------------------'); 
+        arr.forEach(function(data,index){
+                console.log('['+index+'] ' + data);
+        });
+        console.log('---------------------------------------------------');
+        function isPrime(element,index,array){
+//            console.log('index ' +index);
+//            console.log('array ' +array);
+            return ((element % 2) != 0);
+        }
+        console.log('find an array of primes ' + arr.find(isPrime)); // finds the first matching element: 4
+        console.log('filtered an array of primes ' +arr.filter(isPrime)); //filters the array: 4,2,10,10
+        console.log([2,4,6].every(isPrime));//true
+        console.log([1,13,6].every(isPrime)); //false
+        //array.entries return array iterator with key/value pairs
+        console.log(entriesArr.next().value);//[0,1]
+        console.log(entriesArr.next().value);//[1,2]
+        console.log(entriesArr.next().value);//[2,2]
+        console.log(entriesArr.next().value);//[3,2]
+        console.log('key array ' +keysArr.next().value); //0
+        console.log('key array ' +keysArr.next().value); //1
+        console.log('key array ' +keysArr.next().value); //2
+        console.log(sortedArr.copyWithin(0,4)); //[6,7,9,12,7,9,10,12]
+
+        function Animal(type){
+            this.name = type;
+            return this.name;
+        }
+
+        var animals = ["lions","monkey","pig"];
+        var b =animals.concat(new Animal("snakes"));
+        console.log(b);
+        console.log(Array.of(1,3,5,"sss"));
+        console.log(Array.from(arr));
+        console.log(Array.from('andy')); // ["a","n","d","y"]
+        console.log(arr.map(function(data){
+            return data*data;
+        }));
+
+        function add(x,y){
+            var sum = 0;
+            for(var i = 0; i<arguments.length;i++){
+                if(Array.isArray(arguments[i])){
+                   sum += arguments[i].reduce(function(a,b){
+                      return a+b;
+                   });
+                }
+                else {
+                    if (typeof arguments[i] === 'number' && typeof !isNaN(arguments[i])) {
+                        sum += arguments[i];
+                    }
+                }
+                }
+            return sum;
+        }
+        
+        console.log('add arguments using reduce ' +add(1,2,3,4,5,[3,5,3]));
+
+
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
